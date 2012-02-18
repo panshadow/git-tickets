@@ -2,7 +2,7 @@
 
 use strict;
 use Cwd;
-
+use Data::Dumper;
 
 my $script = $0;
 my %git = ();
@@ -14,8 +14,15 @@ sub hookCommitMessage {
             or die "can't open commitMessage file: $msgfile";
         my @msglines = <$fd>;
         close $fd;
+
+        my $pattern = qr/(refs|fixes)\s+#\d+/;
+        if ( exists $git{ 'config' }->{'pattern'} ){
+            my $val = $git{ 'config' }->{'pattern'};
+            $pattern = qr/${val}/;
+        }
+
         for ( @msglines ) {
-            if ( /(refs|fixes)\s+#\d+/ ){
+            if ( /${pattern}/ ){
                 exit 0;
             }
         }
@@ -40,8 +47,28 @@ sub cmdInit {
     }
 }
 
+sub git {
+    my $args = shift;
+    my $out = `git $args`;
+    chomp $out;
+    return $out;
+}
 
 
+sub gitConfig {
+    my $out = git('config --get-regexp tickets.*');
+    my %conf = ( map {
+        if( /^tickets\.(.*)\s+(.*)$/ ){
+            +( $1 => $2 );
+        }
+    } split /\s*\n\s*/, $out );
+
+    $git{ 'config' } = \%conf;
+    $git{ 'root' } = git('rev-parse --git-dir');
+}
+
+
+gitConfig();
 if ( $script =~ /commit-msg$/ ){
     my $msgfile = shift 
         or die "commit-msg hook need 1 argument";
@@ -50,13 +77,13 @@ if ( $script =~ /commit-msg$/ ){
 elsif ( $script =~ /git-tickets$/ ){
     my $cmd = shift or 'help';
 
-    $git{ 'root' } = `git rev-parse --git-dir`;
-    chomp $git{ 'root' };
+    
 
     my %commands = (
         help    => \&cmdHelp,
         init     => \&cmdInit,
     );
+
 
     unless( exists $commands{$cmd} ){
         $cmd = 'help';
