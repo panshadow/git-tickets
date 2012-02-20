@@ -1,18 +1,18 @@
 ABOUT
-=====
+-----
 
 It's commit-msg hook with installator. Support custom commit message pattern.
 
 
 INSTALL
-=======
+-------
 
     git clone git://github.com/panshadow/git-tickets.git
     cd git-tickets
     make install
 
 USE
-===
+---
 
     cd YOUR_GIT_REPO
     # set custom pattern
