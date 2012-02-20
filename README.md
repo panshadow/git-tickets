@@ -1,3 +1,9 @@
+ABOUT
+=====
+
+It's commit-msg hook with installator. Support custom commit message pattern.
+
+
 INSTALL
 =======
 
