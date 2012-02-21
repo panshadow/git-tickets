@@ -4,6 +4,8 @@ use strict;
 use Cwd;
 use Data::Dumper;
 
+
+sub defaultPattern { return '(refs|fixes)\s+#\d+'; }
 my $script = $0;
 my %git = ();
 
@@ -21,7 +23,7 @@ sub hookCommitMessage {
         my @msglines = <$fd>;
         close $fd;
 
-        my $pattern = qr/(refs|fixes)\s+#\d+/;
+        my $pattern = qr{ defaultPattern() };
         if ( exists $git{ 'config' }->{'pattern'} ){
             my $val = $git{ 'config' }->{'pattern'};
             $pattern = qr/${val}/;
