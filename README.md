@@ -11,11 +11,11 @@ INSTALL
     cd git-tickets
     make install
 
-USE
----
+USAGE
+-----
 
     cd YOUR_GIT_REPO
-    # set custom pattern
-    git config --file=.git/config tickets.pattern 'REGEXP_PATTERN'
     # install hook
     git tickets init
+    #custom pattern
+    git tickets pattern 'REGEXP_PATTERN'
