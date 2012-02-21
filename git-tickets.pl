@@ -40,7 +40,10 @@ sub hookCommitMessage {
 }
 
 sub cmdHelp {
+    local $\ = "\n";
     print "git tickets init -- add hook";
+    print "git tickets pattern -- show current pattern";
+    print "git tickets pattern NEW_PATTERN -- change pattern";
     exit;
 }
 
@@ -52,6 +55,26 @@ sub cmdInit {
     else{
         print "hook commit-msg already exists\n";
     }
+}
+
+sub cmdPattern {
+    unless( $_[0] ){
+        my $pattern = $git{config}->{pattern} || defaultPattern();
+        print "Current pattern is: /$pattern/";
+        exit;
+    }
+
+    my $pattern = shift;
+    eval {
+        'commit-msg' =~ /$pattern/;
+    };
+
+    if( $@ ){
+        error "Broken pattern. Use regexp patterns only";
+    }
+
+    git("config --file=".$git{'root'}."/config tickets.pattern '".$pattern."'");
+    print "Pattern changed to /$pattern/\n";
 }
 
 sub git {
@@ -88,7 +111,8 @@ elsif ( $script =~ /git-tickets$/ ){
 
     my %commands = (
         help    => \&cmdHelp,
-        init     => \&cmdInit,
+        init    => \&cmdInit,
+        pattern => \&cmdPattern,
     );
 
 
@@ -97,7 +121,7 @@ elsif ( $script =~ /git-tickets$/ ){
         $commands{$cmd}->();
     }
 
-    $commands{$cmd}();
+    $commands{$cmd}( @ARGV );
 }
 else{
     print "direct run: $script\n";
