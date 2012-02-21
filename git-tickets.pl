@@ -7,11 +7,17 @@ use Data::Dumper;
 my $script = $0;
 my %git = ();
 
+sub error {
+    my $msg = shift;
+    print $msg."\n";
+    exit 1;
+}
+
 sub hookCommitMessage {
     my $msgfile = shift;
     if ( -f $msgfile ){
         open my $fd,'<',$msgfile 
-            or die "can't open commitMessage file: $msgfile";
+            or error "can't open commitMessage file: $msgfile";
         my @msglines = <$fd>;
         close $fd;
 
@@ -26,10 +32,9 @@ sub hookCommitMessage {
                 exit 0;
             }
         }
-        die "Wrong commit message" ;
-        exit 1;
+        error "Wrong commit message" ;
     }
-    die "Not exists commitMessage file: $msgfile";
+    error "Not exists commitMessage file: $msgfile";
 }
 
 sub cmdHelp {
@@ -71,7 +76,7 @@ sub gitConfig {
 gitConfig();
 if ( $script =~ /commit-msg$/ ){
     my $msgfile = shift 
-        or die "commit-msg hook need 1 argument";
+        or error "commit-msg hook need 1 argument";
     hookCommitMessage( $msgfile );
 }
 elsif ( $script =~ /git-tickets$/ ){
