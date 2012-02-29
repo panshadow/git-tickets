@@ -41,9 +41,11 @@ sub hookCommitMessage {
 
 sub cmdHelp {
     local $\ = "\n";
-    print "git tickets init -- add hook";
-    print "git tickets pattern -- show current pattern";
-    print "git tickets pattern NEW_PATTERN -- change pattern";
+    print "git tickets init\t\t\t\t\t-- add hook";
+    print "git tickets remove\t\t\t\t-- remove hook";
+    print "git tickets status\t\t\t\t-- get hook status";
+    print "git tickets pattern\t\t\t\t-- show current pattern";
+    print "git tickets pattern NEW_PATTERN\t-- change pattern";
     exit;
 }
 
@@ -139,11 +141,12 @@ if ( $script =~ /commit-msg$/ ){
 elsif ( $script =~ /git-tickets$/ ){
     my $cmd = shift or 'help';
 
-    
 
     my %commands = (
         help    => \&cmdHelp,
         init    => \&cmdInit,
+        remove  => \&cmdRemove,
+        status  => \&cmdStatus,
         pattern => \&cmdPattern,
     );
 
