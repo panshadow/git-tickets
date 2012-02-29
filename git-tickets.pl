@@ -57,6 +57,28 @@ sub cmdInit {
     }
 }
 
+sub _hasHook {
+    my $hook = $git{'root'}.'/hooks/commit-msg';
+    if( -f $hook && -l $hook ){
+        my $origin = readlink($hook);
+        if( $origin eq $script ){
+            return 1;
+        }
+    }
+    return 0;
+}
+
+sub cmdStatus {
+    if( _hasHook() ){
+        print "hook installed\n";
+        cmdPattern();
+    }
+    else{
+        print "hook doesn't installed\n";
+        print "use 'git tickets init' to install it\n";
+    }
+}
+
 sub cmdPattern {
     unless( $_[0] ){
         my $pattern = $git{config}->{pattern} || defaultPattern();
