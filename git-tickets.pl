@@ -57,6 +57,16 @@ sub cmdInit {
     }
 }
 
+sub cmdRemove {
+    if(_hasHook()){
+        unlink $git{'root'}.'/hooks/commit-msg';
+        print "hook has removed\n";
+    }
+    else{
+        print "hook not installed\n";
+    }
+}
+
 sub _hasHook {
     my $hook = $git{'root'}.'/hooks/commit-msg';
     if( -f $hook && -l $hook ){
