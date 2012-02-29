@@ -94,7 +94,7 @@ sub cmdStatus {
 sub cmdPattern {
     unless( $_[0] ){
         my $pattern = $git{config}->{pattern} || defaultPattern();
-        print "Current pattern is: /$pattern/";
+        print "Current pattern is: /$pattern/\n";
         exit;
     }
 
