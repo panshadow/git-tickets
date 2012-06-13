@@ -23,18 +23,20 @@ sub hookCommitMessage {
         my @msglines = <$fd>;
         close $fd;
 
-        my $pattern = qr{ defaultPattern() };
+        my $val = defaultPattern();
         if ( exists $git{ 'config' }->{'pattern'} ){
-            my $val = $git{ 'config' }->{'pattern'};
-            $pattern = qr/${val}/;
+            $val = $git{ 'config' }->{'pattern'};
+            
         }
+        print "Check commit-msg. Used pattern /$val/\n";
+        my $pattern = qr/${val}/;
 
         for ( @msglines ) {
             if ( /${pattern}/ ){
                 exit 0;
             }
         }
-        error "Wrong commit message" ;
+        error "Wrong commit message." ;
     }
     error "Not exists commitMessage file: $msgfile";
 }
