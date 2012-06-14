@@ -11,6 +11,14 @@ INSTALL
     cd git-tickets
     make install
 
+UPGRADE
+_______
+
+    cd path/git-tickets
+    git pull
+    make install
+
+
 USAGE
 -----
 
