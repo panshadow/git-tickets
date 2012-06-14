@@ -15,6 +15,16 @@ sub error {
     exit 1;
 }
 
+sub getPattern {
+    my $val = defaultPattern();
+    my $isDefault = 1;
+    if ( exists $git{ 'config' }->{'pattern'} ){
+        $val = $git{ 'config' }->{'pattern'};
+        $isDefault = 0;
+    }
+    return wantarray() ? ($val,$isDefault) : $val;
+}
+
 sub hookCommitMessage {
     my $msgfile = shift;
     if ( -f $msgfile ){
@@ -23,11 +33,7 @@ sub hookCommitMessage {
         my @msglines = <$fd>;
         close $fd;
 
-        my $val = defaultPattern();
-        if ( exists $git{ 'config' }->{'pattern'} ){
-            $val = $git{ 'config' }->{'pattern'};
-            
-        }
+        my $val = getPattern(); 
         print "Check commit-msg. Used pattern /$val/\n";
         my $pattern = qr/${val}/;
 
@@ -43,11 +49,14 @@ sub hookCommitMessage {
 
 sub cmdHelp {
     local $\ = "\n";
+    my ($pattern,$isDefault) = getPattern();
+
     print "git tickets init\t\t\t\t\t-- add hook";
     print "git tickets remove\t\t\t\t-- remove hook";
     print "git tickets status\t\t\t\t-- get hook status";
     print "git tickets pattern\t\t\t\t-- show current pattern";
     print "git tickets pattern NEW_PATTERN\t-- change pattern";
+    print "current pattern is /$pattern/ ".($isDefault ? '(default)' : '(custom)' );
     exit;
 }
 
