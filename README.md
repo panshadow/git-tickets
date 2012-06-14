@@ -12,7 +12,7 @@ INSTALL
     make install
 
 UPGRADE
-_______
+-------
 
     cd path/git-tickets
     git pull
